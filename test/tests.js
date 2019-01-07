@@ -1,7 +1,18 @@
 /* eslint-disable no-undef*/
 describe('XYZ Forwarder', function () {
     // -------------------DO NOT EDIT ANYTHING BELOW THIS LINE-----------------------
-    var ReportingService = function () {
+    var MessageTypes = {
+            SessionStart: 1,
+            SessionEnd: 2,
+            PageView: 3,
+            PageEvent: 4,
+            CrashReport: 5,
+            OptOut: 6,
+            AppStateTransition: 10,
+            Profile: 14,
+            Commerce: 16
+        },
+        ReportingService = function () {
             var self = this;
 
             this.id = null;
