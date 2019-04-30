@@ -23,16 +23,16 @@ var identityHandler = {
     onUserIdentified: function(mParticleUser) {
 
     },
-    onIdentifyCompleted: function(mParticleUser, identityApiRequest) {
+    onIdentifyComplete: function(mParticleUser, identityApiRequest) {
 
     },
-    onLoginCompleted: function(mParticleUser, identityApiRequest) {
+    onLoginComplete: function(mParticleUser, identityApiRequest) {
 
     },
-    onLogoutCompleted: function(mParticleUser, identityApiRequest) {
+    onLogoutComplete: function(mParticleUser, identityApiRequest) {
 
     },
-    onModifyCompleted: function(mParticleUser, identityApiRequest) {
+    onModifyComplete: function(mParticleUser, identityApiRequest) {
 
     },
 
