@@ -1,3 +1,18 @@
+var branchStandardEvents = [
+    'START_TRIAL',
+    'SUBSCRIBE',
+    'SEARCH',
+    'VIEW_ITEM',
+    'VIEW_ITEMS',
+    'RATE',
+    'SHARE',
+    'COMPLETE_REGISTRATION',
+    'COMPLETE_TUTORIAL',
+    'ACHIEVE_LEVEL',
+    'UNLOCK_ACHIEVEMENT',
+    'INVITE',
+    'LOGIN']
+
 /*
 A non-ecommerce event has the following schema:
 
@@ -16,7 +31,36 @@ A non-ecommerce event has the following schema:
 function EventHandler(common) {
     this.common = common || {};
 }
-EventHandler.prototype.logEvent = function(event) {};
+
+EventHandler.prototype.logEvent = function(event) {
+    if(branchStandardEvents[event.EventName]) { // Log a Standard event
+        var event_data_and_custom_data = {};
+        if(event.EventAttributes) {
+            event_data_and_custom_data
+        }
+
+        branch.logEvent(
+            event.eventName,
+            event_data_and_custom_data,
+            content_items,
+            customer_event_alias,
+        callback (err)
+);
+
+
+    } else { // Log a Custom event
+
+        branch.logEvent(
+            event.eventName,
+            event.EventAttributes,
+            callback (err)
+        );
+    }
+
+};
+
+
+
 EventHandler.prototype.logError = function(event) {
     // The schema for a logError event is the same, but noteworthy differences are as follows:
     // {
