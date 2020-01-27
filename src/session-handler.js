@@ -1,6 +1,6 @@
 var sessionHandler = {
     onSessionStart: function(event) {
-        
+
     },
     onSessionEnd: function(event) {
 

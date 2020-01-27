@@ -16,25 +16,30 @@ var initialization = {
                Generally, our integrations create script tags and append them to the <head>. Please follow the following format as a guide:
             */
 
-            // var clientScript = document.createElement('script');
-            // clientScript.type = 'text/javascript';
-            // clientScript.async = true;
-            // clientScript.src = 'https://www.clientscript.com/static/clientSDK.js';   // <---- Update this to be your script
-            // (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(clientScript);
-            // clientScript.onload = function() {
-            //     if (clientSDKObject && eventQueue.length > 0) {
-            //         // Process any events that may have been queued up while forwarder was being initialized.
-            //         for (var i = 0; i < eventQueue.length; i++) {
-            //             processEvent(eventQueue[i]);
-            //         }
-            //          // now that each queued event is processed, we empty the eventQueue
-            //         eventQueue = [];
-            //     }
-            //    clientSDKObject.initialize(forwarderSettings.apiKey);
-            // };
+            var branchScript = document.createElement('script');
+            branchScript.type = 'text/javascript';
+            branchScript.async = true;
+            branchScript.src = 'https://cdn.branch.io/branch-latest.min.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(clientScript);
+            clientScript.onload = (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData".split(" "), 0);
+            branch.init(forwarderSettings.liveKey, function(err, data) {
+                // callback to handle err or data
+            });
+
+
+;
         } else {
             // For testing, you should fill out this section in order to ensure any required initialization calls are made,
             // clientSDKObject.initialize(forwarderSettings.apiKey)
+            var clientScript = document.createElement('script');
+            clientScript.type = 'text/javascript';
+            clientScript.async = true;
+            clientScript.src = 'https://cdn.branch.io/branch-latest.min.js';
+            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(clientScript);
+            clientScript.onload = (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData".split(" "), 0);
+            branch.init(forwarderSettings.testKey, function(err, data) {
+                // callback to handle err or data
+            });
         }
     }
 };
