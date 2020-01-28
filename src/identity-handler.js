@@ -21,8 +21,14 @@ For more userIdentity types, see http://docs.mparticle.com/developers/sdk/javasc
 function IdentityHandler(common) {
     this.common = common || {};
 }
+
+
 IdentityHandler.prototype.onUserIdentified = function(mParticleUser) {
-    branch.setIdentity(mParticleUser.getUserIdentities().);
+    var mPUser = mParticleUser.getUserIdentities();
+    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
+    if (typeof userId !== 'undefined') {
+        branch.setIdentity(userId);
+    }
 };
 
 
@@ -30,15 +36,25 @@ IdentityHandler.prototype.onIdentifyComplete = function(
     mParticleUser,
     identityApiRequest
 ) {
-    branch.setIdentity(identityApiRequest.customerid);
+    var mPUser = mParticleUser.getUserIdentities();
+    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
+    if (typeof userId !== 'undefined') {
+        branch.setIdentity(userId);
+    }
 };
+
 
 IdentityHandler.prototype.onLoginComplete = function(
     mParticleUser,
     identityApiRequest
 ) {
-    branch.setIdentity(identityApiRequest.customerid);
+    var mPUser = mParticleUser.getUserIdentities();
+    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
+    if (typeof userId !== 'undefined') {
+        branch.setIdentity(userId);
+    }
 };
+
 
 IdentityHandler.prototype.onLogoutComplete = function(
     mParticleUser,
@@ -47,12 +63,18 @@ IdentityHandler.prototype.onLogoutComplete = function(
     branch.logout();
 };
 
+
 IdentityHandler.prototype.onModifyComplete = function(
     mParticleUser,
     identityApiRequest
 ) {
-    branch.setIdentity(identityApiRequest.customerid);
+    var mPUser = mParticleUser.getUserIdentities();
+    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
+    if (typeof userId !== 'undefined') {
+        branch.setIdentity(userId);
+    }
 };
+
 
 IdentityHandler.prototype.onSetUserIdentity = function(
     forwarderSettings,
