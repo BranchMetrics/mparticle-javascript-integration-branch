@@ -33,7 +33,7 @@ function EventHandler(common) {
 }
 
 EventHandler.prototype.logEvent = function(event) {
-    if(branchStandardEvents[event.EventName]) { // Log a Standard event
+    if(branchStandardEvents[event.EventName]) {
         var event_data_and_custom_data = {};
         if(event.EventAttributes) {
             event_data_and_custom_data
