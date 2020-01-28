@@ -75,12 +75,12 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
 
     var event_data_and_custom_data = {};
 
-    // Top-level event stuff
+    // Top-level event metadata
     event_data_and_custom_data.currency = event.CurrencyCode;
     event_data_and_custom_data.mpid = event.MPID;
 
 
-    // ProductActions stuff
+    // ProductActions metadata
     event_data_and_custom_data.affiliation = event.ProductAction.Affiliation;
     event_data_and_custom_data.coupon = event.ProductAction.CouponCode;
     event_data_and_custom_data.transaction_id = event.ProductAction.TransactionId;
@@ -89,7 +89,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
     event_data_and_custom_data.revenue = event.ProductAction.TotalAmount;
 
 
-    // Account for EventAttributes --> EventData
+    // Map EventAttributes to Branch event_data
     if(event.EventAttributes) {
         const eventKeys = Object.keys(event.EventAttributes);
         for (const eventkey of eventKeys) {
@@ -97,7 +97,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         }
     }
 
-    // Account for UserAttributes --> CustomData
+    // Map UserAttributes to Branch custom_data
     if(event.UserAttributes) {
         const userKeys = Object.keys(event.UserAttributes);
         for (const userkey of userKeys) {
@@ -105,30 +105,31 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         }
     }
 
-    // Account for Content Items
+    // Turn ProductList into Branch content_items
+    var content_items = [];
     if(event.ProductAction.ProductList) {
-        content_items = [];
         for (var i = 0; i < event.ProductAction.ProductList.length; i++) {
-            var temp_obj = {};
-            temp_obj.$product_brand = event.ProductAction.ProductList[i].Brand;
-            temp_obj.$product_category = event.ProductAction.ProductList[i].Category;
-            temp_obj.$coupon_code = event.ProductAction.ProductList[i].CouponCode;
-            temp_obj.$product_name = event.ProductAction.ProductList[i].Name;
-            temp_obj.$price = event.ProductAction.ProductList[i].Price;
-            temp_obj.$quantity = event.ProductAction.ProductList[i].Quantity;
-            temp_obj.$sku = event.ProductAction.ProductList[i].Sku;
-            temp_obj.$total_amount = event.ProductAction.ProductList[i].TotalAmount;
-            temp_obj.$product_variant = event.ProductAction.ProductList[i].Variant;
+            var content_object = {};
+            content_object.$product_brand = event.ProductAction.ProductList[i].Brand;
+            content_object.$product_category = event.ProductAction.ProductList[i].Category;
+            content_object.$coupon_code = event.ProductAction.ProductList[i].CouponCode;
+            content_object.$product_name = event.ProductAction.ProductList[i].Name;
+            content_object.$price = event.ProductAction.ProductList[i].Price;
+            content_object.$quantity = event.ProductAction.ProductList[i].Quantity;
+            content_object.$sku = event.ProductAction.ProductList[i].Sku;
+            content_object.$total_amount = event.ProductAction.ProductList[i].TotalAmount;
+            content_object.$product_variant = event.ProductAction.ProductList[i].Variant;
 
             var keys = Object.keys(event.ProductAction.ProductList[i].Attributes);
             for (var key of keys) {
-                temp_obj.key = event.ProductAction.ProductList[i].Attributes.key
+                content_object.key = event.ProductAction.ProductList[i].Attributes.key
             }
-            content_items.push(temp_obj);
+            content_items.push(content_object);
         }
     }
 
-    // Handle event naming
+    // Handle mapping of mParticle to Branch event names
+    var customer_event_alias = '';
     var event_name = '';
     switch() {
         case 10:
@@ -142,7 +143,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             break;
         case 13:
             event_name = 'INITIATE_PURCHASE';
-            var customer_event_alias = 'ProductCheckoutOption';
+            customer_event_alias = 'ProductCheckoutOption';
             break;
         case 14:
             event_name = 'CLICK_AD';
@@ -161,7 +162,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             break;
         case 19:
             event_name = 'CLICK_AD';
-            var customer_event_alias = 'PromotionClick';
+            customer_event_alias = 'PromotionClick';
             break;
         case 20:
             event_name = 'ADD_TO_WISHLIST';
@@ -176,6 +177,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             event_name = event.EventName;
     }
 
+    // Log Branch Commerce event
     branch.logEvent(
         event_name,
         event_data_and_custom_data,
