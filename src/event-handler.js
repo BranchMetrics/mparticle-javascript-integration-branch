@@ -11,7 +11,8 @@ var branchStandardEvents = [
     'ACHIEVE_LEVEL',
     'UNLOCK_ACHIEVEMENT',
     'INVITE',
-    'LOGIN']
+    'LOGIN'
+]
 
 /*
 A non-ecommerce event has the following schema:
@@ -33,26 +34,57 @@ function EventHandler(common) {
 }
 
 EventHandler.prototype.logEvent = function(event) {
+    // Log a Branch Standard event if it's on the list
+
     if(branchStandardEvents[event.EventName]) {
         var event_data_and_custom_data = {};
+
+        // Map EventAttributes to Branch event_data
         if(event.EventAttributes) {
-            event_data_and_custom_data
+            const eventKeys = Object.keys(event.EventAttributes);
+            for (const eventkey of eventKeys) {
+                event_data_and_custom_data.eventkey = event.EventAttributes.eventkey;
+            }
+        }
+
+        // Map UserAttributes to Branch custom_data
+        if(event.UserAttributes) {
+            const userKeys = Object.keys(event.UserAttributes);
+            for (const userkey of userKeys) {
+                event_data_and_custom_data.userkey = event.UserAttributes.userkey;
+            }
         }
 
         branch.logEvent(
             event.eventName,
             event_data_and_custom_data,
-            content_items,
-            customer_event_alias,
-        callback (err)
-);
+            callback (err)
+        );
 
 
-    } else { // Log a Custom event
+    } else {
+        var custom_data = {};
 
+        // Map EventAttributes to Branch event_data
+        if(event.EventAttributes) {
+            const eventKeys = Object.keys(event.EventAttributes);
+            for (const eventkey of eventKeys) {
+                custom_data.eventkey = event.EventAttributes.eventkey;
+            }
+        }
+
+        // Map UserAttributes to Branch custom_data
+        if(event.UserAttributes) {
+            const userKeys = Object.keys(event.UserAttributes);
+            for (const userkey of userKeys) {
+                custom_data.userkey = event.UserAttributes.userkey;
+            }
+        }
+
+        // Log a Branch custome event
         branch.logEvent(
             event.eventName,
-            event.EventAttributes,
+            custom_data,
             callback (err)
         );
     }
