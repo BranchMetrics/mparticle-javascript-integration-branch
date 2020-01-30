@@ -1,13 +1,23 @@
-var branchCommerceEvents = [
-    'ADD_TO_CART',
-    'ADD_TO_WISHLIST',
-    'VIEW_CART',
-    'INITIATE_PURCHASE',
-    'ADD_PAYMENT_INFO',
-    'CLICK_AD',
-    'PURCHASE',
-    'SPEND_CREDITS',
-    'VIEW_AD']
+var eventMapping = {
+    10: 'ADD_TO_CART',
+    11: 'ProductRemoveFromCart',
+    12: 'INITIATE_PURCHASE',
+    13: 'INITIATE_PURCHASE',
+    14: 'CLICK_AD',
+    15: 'VIEW_ITEM',
+    16: 'PURCHASE',
+    17: 'ProductRefund',
+    18: 'VIEW_AD',
+    19: 'CLICK_AD',
+    20: 'ADD_TO_WISHLIST',
+    21: 'ProductRemoveFromWishlist',
+    22: 'VIEW_ITEM'
+}
+
+var aliasMapping = {
+    13: 'ProductCheckoutOption',
+    19: 'PromotionClick'
+}
 
 function CommerceHandler(common) {
     this.common = common || {};
@@ -73,109 +83,38 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             22: ProductImpression
         */
 
-    var event_data_and_custom_data = {};
-
-    // Top-level event metadata
-    event_data_and_custom_data.currency = event.CurrencyCode;
-    event_data_and_custom_data.mpid = event.MPID;
-
-
-    // ProductActions metadata
-    event_data_and_custom_data.affiliation = event.ProductAction.Affiliation;
-    event_data_and_custom_data.coupon = event.ProductAction.CouponCode;
-    event_data_and_custom_data.transaction_id = event.ProductAction.TransactionId;
-    event_data_and_custom_data.shipping = event.ProductAction.ShippingAmount;
-    event_data_and_custom_data.tax = event.ProductAction.TaxAmount;
-    event_data_and_custom_data.revenue = event.ProductAction.TotalAmount;
-
-
-    // Map EventAttributes to Branch event_data
-    if(event.EventAttributes) {
-        const eventKeys = Object.keys(event.EventAttributes);
-        for (const eventkey of eventKeys) {
-            event_data_and_custom_data.eventkey = event.EventAttributes.eventkey;
-        }
-    }
-
-    // Map UserAttributes to Branch custom_data
-    if(event.UserAttributes) {
-        const userKeys = Object.keys(event.UserAttributes);
-        for (const userkey of userKeys) {
-            event_data_and_custom_data.userkey = event.UserAttributes.userkey;
-        }
-    }
+    var event_data_and_custom_data = {
+        currency: event.CurrencyCode,
+        mpid: event.MPID,
+        affiliation: event.ProductAction.Affiliation,
+        coupon: event.ProductAction.CouponCode,
+        transaction_id: event.ProductAction.TransactionId,
+        shipping: event.ProductAction.ShippingAmount,
+        tax: event.ProductAction.TaxAmount,
+        revenue: event.ProductAction.TotalAmount,
+        ...event.EventAttributes, 
+        ...event.UserAttributes
+    };
 
     // Turn ProductList into Branch content_items
-    var content_items = [];
-    if(event.ProductAction.ProductList) {
-        for (var i = 0; i < event.ProductAction.ProductList.length; i++) {
-            var content_object = {};
-            content_object.$product_brand = event.ProductAction.ProductList[i].Brand;
-            content_object.$product_category = event.ProductAction.ProductList[i].Category;
-            content_object.$coupon_code = event.ProductAction.ProductList[i].CouponCode;
-            content_object.$product_name = event.ProductAction.ProductList[i].Name;
-            content_object.$price = event.ProductAction.ProductList[i].Price;
-            content_object.$quantity = event.ProductAction.ProductList[i].Quantity;
-            content_object.$sku = event.ProductAction.ProductList[i].Sku;
-            content_object.$total_amount = event.ProductAction.ProductList[i].TotalAmount;
-            content_object.$product_variant = event.ProductAction.ProductList[i].Variant;
-
-            var keys = Object.keys(event.ProductAction.ProductList[i].Attributes);
-            for (var key of keys) {
-                content_object.key = event.ProductAction.ProductList[i].Attributes.key
-            }
-            content_items.push(content_object);
-        }
-    }
+    var content_items = event.ProductAction.ProductList.map(value => {
+        return {
+            $product_brand: value.Brand,
+            $product_category: value.Category,
+            $coupon_code: value.CouponCode,
+            $product_name: value.Name,
+            $price: value.Price,
+            $quantity: value.Quantity,
+            $sku: value.Sku,
+            $total_amount: value.TotalAmount,
+            $product_variant: value.Variant,
+            ...value.Attributes
+        };
+    })
 
     // Handle mapping of mParticle to Branch event names
-    var customer_event_alias = '';
-    var event_name = '';
-    switch() {
-        case 10:
-            event_name = 'ADD_TO_CART';
-            break;
-        case 11:
-            event_name = 'ProductRemoveFromCart,';
-            break;
-        case 12:
-            event_name = 'INITIATE_PURCHASE';
-            break;
-        case 13:
-            event_name = 'INITIATE_PURCHASE';
-            customer_event_alias = 'ProductCheckoutOption';
-            break;
-        case 14:
-            event_name = 'CLICK_AD';
-            break;
-        case 15:
-            event_name = 'VIEW_ITEM';
-            break;
-        case 16:
-            event_name = 'PURCHASE';
-            break;
-        case 17:
-            event_name = 'ProductRefund';
-            break;
-        case 18:
-            event_name = 'VIEW_AD';
-            break;
-        case 19:
-            event_name = 'CLICK_AD';
-            customer_event_alias = 'PromotionClick';
-            break;
-        case 20:
-            event_name = 'ADD_TO_WISHLIST';
-            break;
-        case 21:
-            event_name = 'ProductRemoveFromWishlist';
-            break;
-        case 22:
-            event_name = 'VIEW_ITEM';
-            break;
-        default:
-            event_name = event.EventName;
-    }
+    var customer_event_alias = aliasMapping[event.EventCategory] || '';
+    var event_name = eventMapping[event.EventCategory] || event.EventName;
 
     // Log Branch Commerce event
     branch.logEvent(
