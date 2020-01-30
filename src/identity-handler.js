@@ -22,66 +22,27 @@ function IdentityHandler(common) {
     this.common = common || {};
 }
 
-
-IdentityHandler.prototype.onUserIdentified = function(mParticleUser) {
+function identified(mParticleUser, identityApiRequest) {
     var mPUser = mParticleUser.getUserIdentities();
     var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
     if (typeof userId !== 'undefined') {
         branch.setIdentity(userId);
     }
-};
+}
 
-
-IdentityHandler.prototype.onIdentifyComplete = function(
-    mParticleUser,
-    identityApiRequest
-) {
-    var mPUser = mParticleUser.getUserIdentities();
-    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
-    if (typeof userId !== 'undefined') {
-        branch.setIdentity(userId);
-    }
-};
-
-
-IdentityHandler.prototype.onLoginComplete = function(
-    mParticleUser,
-    identityApiRequest
-) {
-    var mPUser = mParticleUser.getUserIdentities();
-    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
-    if (typeof userId !== 'undefined') {
-        branch.setIdentity(userId);
-    }
-};
-
-
-IdentityHandler.prototype.onLogoutComplete = function(
-    mParticleUser,
-    identityApiRequest
-) {
+function logout(mParticleUser, identityApiRequest) {
     branch.logout();
-};
+}
 
-
-IdentityHandler.prototype.onModifyComplete = function(
-    mParticleUser,
-    identityApiRequest
-) {
-    var mPUser = mParticleUser.getUserIdentities();
-    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
-    if (typeof userId !== 'undefined') {
-        branch.setIdentity(userId);
-    }
-};
-
-
-IdentityHandler.prototype.onSetUserIdentity = function(
-    forwarderSettings,
-    id,
-    type
-) {
+function setUserIdentity(forwarderSettings, id, type) {
     branch.setIdentity(id);
-};
+}
+
+IdentityHandler.prototype.onUserIdentified = identified;
+IdentityHandler.prototype.onIdentifyComplete = identified;
+IdentityHandler.prototype.onLoginComplete = identified;
+IdentityHandler.prototype.onModifyComplete = identified;
+IdentityHandler.prototype.onLogoutComplete = logout;
+IdentityHandler.prototype.onSetUserIdentity =  setUserIdentity;
 
 module.exports = IdentityHandler;
