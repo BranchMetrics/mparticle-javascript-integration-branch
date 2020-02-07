@@ -28,8 +28,10 @@ var config = {
     excludeAnonymousUser: false
 };
 
-mParticle.configureForwarder(config);
-
+window.mParticle.config = window.mParticle.config || {};
+window.mParticle.config.workspaceToken = 'testkit';
+window.mParticle.config.requestConfig = false;
+window.mParticle.config.kitConfigs = [config];
 },{"../../../../src/initialization.js":9,"../../../../test/end-to-end-testapp/settings.js":12}],3:[function(require,module,exports){
 // =============== REACH OUT TO MPARTICLE IF YOU HAVE ANY QUESTIONS ===============
 //
@@ -532,7 +534,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
     );
 };
 
-module.exports = commerceHandler;
+module.exports = CommerceHandler;
 
 },{}],6:[function(require,module,exports){
 function Common() {}
@@ -543,6 +545,22 @@ Common.prototype.exampleMethod = function () {
 
 module.exports = Common;
 },{}],7:[function(require,module,exports){
+var branchStandardEvents = [
+    'START_TRIAL',
+    'SUBSCRIBE',
+    'SEARCH',
+    'VIEW_ITEM',
+    'VIEW_ITEMS',
+    'RATE',
+    'SHARE',
+    'COMPLETE_REGISTRATION',
+    'COMPLETE_TUTORIAL',
+    'ACHIEVE_LEVEL',
+    'UNLOCK_ACHIEVEMENT',
+    'INVITE',
+    'LOGIN'
+]
+
 /*
 A non-ecommerce event has the following schema:
 
@@ -587,7 +605,7 @@ EventHandler.prototype.logPageView = function(event) {
         */
 };
 
-module.exports = eventHandler;
+module.exports = EventHandler;
 
 },{}],8:[function(require,module,exports){
 /*
@@ -637,7 +655,7 @@ IdentityHandler.prototype.onModifyComplete = identified;
 IdentityHandler.prototype.onLogoutComplete = logout;
 IdentityHandler.prototype.onSetUserIdentity =  setUserIdentity;
 
-module.exports = identityHandler;
+module.exports = IdentityHandler;
 
 },{}],9:[function(require,module,exports){
 var initialization = {
@@ -659,6 +677,20 @@ var initialization = {
         branchScript.type = 'text/javascript';
         branchScript.async = true;
         branchScript.src = 'https://cdn.branch.io/branch-latest.min.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(branchScript);
+        (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData".split(" "), 0);
+        branchScript.onload = function(){
+            // use the test key if testMode ---- I am not sure if testMode is what is being referred to here, I think it is for running unit tests.
+            var key = testMode ? forwarderSettings.testKey : forwarderSettings.liveKey;
+            branch.init(key, function(err, data) {
+            // callback to handle err or data
+                isInitialized = true;
+            });
+        }
+        var branchScript = document.createElement('script');
+        branchScript.type = 'text/javascript';
+        branchScript.async = true;
+        branchScript.src = 'https://cdn.branch.io/branch-latest.min.js';
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(clientScript);
         (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData".split(" "), 0);
         branchScript.onload = function(){
@@ -668,11 +700,12 @@ var initialization = {
             // callback to handle err or data
                 isInitialized = true;
             });
-        }   
+        }
     }
 };
 
 module.exports = initialization;
+
 },{}],10:[function(require,module,exports){
 var sessionHandler = {
     onSessionStart: function(event) {
@@ -713,12 +746,12 @@ UserAttributeHandler.prototype.onConsentStateUpdated = function(
     mParticleUser
 ) {};
 
-module.exports = userAttributeHandler;
+module.exports = UserAttributeHandler;
 
 },{}],12:[function(require,module,exports){
 var SDKsettings = {
-    apiKey: 'key_live_phqFN7svok1v1Eo0X12gCcpbyBldcahC',
-    liveKey: 'key_live_phqFN7svok1v1Eo0X12gCcpbyBldcahC'
+    liveKey: 'key_live_phqFN7svok1v1Eo0X12gCcpbyBldcahC',
+    testKey: 'key_test_koxAQ1CsknYC7vb6819wfphcCrpkiplL'
     /* fill in SDKsettings with any particular settings or options your sdk requires in order to
     initialize, this may be apiKey, projectId, primaryCustomerType, etc. These are passed
     into the src/initialization.js file as the
