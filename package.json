@@ -26,6 +26,5 @@
   },
   "dependencies": {
     "@mparticle/web-sdk": "^2.11.3"
-    "@mparticle/web-sdk": "github:mparticle/mparticle-sdk-javascript"
   }
 }
