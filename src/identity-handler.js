@@ -45,4 +45,4 @@ IdentityHandler.prototype.onModifyComplete = identified;
 IdentityHandler.prototype.onLogoutComplete = logout;
 IdentityHandler.prototype.onSetUserIdentity =  setUserIdentity;
 
-module.exports = identityHandler;
+module.exports = IdentityHandler;

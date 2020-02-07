@@ -1,3 +1,19 @@
+var branchStandardEvents = [
+    'START_TRIAL',
+    'SUBSCRIBE',
+    'SEARCH',
+    'VIEW_ITEM',
+    'VIEW_ITEMS',
+    'RATE',
+    'SHARE',
+    'COMPLETE_REGISTRATION',
+    'COMPLETE_TUTORIAL',
+    'ACHIEVE_LEVEL',
+    'UNLOCK_ACHIEVEMENT',
+    'INVITE',
+    'LOGIN'
+]
+
 /*
 A non-ecommerce event has the following schema:
 
@@ -42,4 +58,4 @@ EventHandler.prototype.logPageView = function(event) {
         */
 };
 
-module.exports = eventHandler;
+module.exports = EventHandler;
