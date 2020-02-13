@@ -432,67 +432,7 @@ function CommerceHandler(common) {
 }
 
 CommerceHandler.prototype.logCommerceEvent = function(event) {
-    /*
-        Sample ecommerce event schema:
-        {
-            CurrencyCode: 'USD',
-            DeviceId:'a80eea1c-57f5-4f84-815e-06fe971b6ef2', // MP generated
-            EventAttributes: { key1: 'value1', key2: 'value2' },
-            EventType: 16,
-            EventCategory: 10, // (This is an add product to cart event, see below for additional ecommerce EventCategories)
-            EventName: "eCommerce - AddToCart",
-            MPID: "8278431810143183490",
-            ProductAction: {
-                Affiliation: 'aff1',
-                CouponCode: 'coupon',
-                ProductActionType: 7,
-                ProductList: [
-                    {
-                        Attributes: { prodKey1: 'prodValue1', prodKey2: 'prodValue2' },
-                        Brand: 'Apple',
-                        Category: 'phones',
-                        CouponCode: 'coupon1',
-                        Name: 'iPhone',
-                        Price: '600',
-                        Quantity: 2,
-                        Sku: "SKU123",
-                        TotalAmount: 1200,
-                        Variant: '64GB'
-                    }
-                ],
-                TransactionId: "tid1",
-                ShippingAmount: 10,
-                TaxAmount: 5,
-                TotalAmount: 1215,
-            },
-            UserAttributes: { userKey1: 'userValue1', userKey2: 'userValue2' }
-            UserIdentities: [
-                {
-                    Identity: 'test@gmail.com', Type: 7
-                }
-            ]
-        }
-
-        If your SDK has specific ways to log different eCommerce events, see below for
-        mParticle's additional ecommerce EventCategory types:
-
-            10: ProductAddToCart, (as shown above)
-            11: ProductRemoveFromCart,
-            12: ProductCheckout,
-            13: ProductCheckoutOption,
-            14: ProductClick,
-            15: ProductViewDetail,
-            16: ProductPurchase,
-            17: ProductRefund,
-            18: PromotionView,
-            19: PromotionClick,
-            20: ProductAddToWishlist,
-            21: ProductRemoveFromWishlist,
-            22: ProductImpression
-        */
-
     var event_data_and_custom_data = {
-        currency: event.CurrencyCode,
         mpid: event.MPID,
         affiliation: event.ProductAction.Affiliation,
         coupon: event.ProductAction.CouponCode,
@@ -500,15 +440,19 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         shipping: event.ProductAction.ShippingAmount,
         tax: event.ProductAction.TaxAmount,
         revenue: event.ProductAction.TotalAmount,
-        ...event.EventAttributes, 
+        ...event.EventAttributes,
         ...event.UserAttributes
     };
+
+
+    "USD" ? (event_data_and_custom_data["currency"] = "USD") : console.log("");
+    // event.CurrencyCode ? (event_data_and_custom_data["currency"] = event.CurrencyCode) : console.log("");
 
     // Turn ProductList into Branch content_items
     var content_items = event.ProductAction.ProductList.map(value => {
         return {
             $product_brand: value.Brand,
-            $product_category: value.Category,
+            // $product_category: value.Category,
             $coupon_code: value.CouponCode,
             $product_name: value.Name,
             $price: value.Price,
@@ -530,7 +474,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         event_data_and_custom_data,
         content_items,
         customer_event_alias,
-        callback (err)
+        function (err) { console.log(err); }
     );
 };
 
@@ -561,73 +505,25 @@ var branchStandardEvents = [
     'LOGIN'
 ]
 
-/*
-A non-ecommerce event has the following schema:
-
-{
-    DeviceId: "a80eea1c-57f5-4f84-815e-06fe971b6ef2",
-    EventAttributes: {test: "Error", t: 'stack trace in string form'},
-    EventName: "Error",
-    MPID: "123123123123",
-    UserAttributes: {userAttr1: 'value1', userAttr2: 'value2'},
-    UserIdentities: [{Identity: 'email@gmail.com', Type: 7}]
-    User Identity Types can be found here:
-}
-
-*/
-
 function EventHandler(common) {
     this.common = common || {};
 }
 
 EventHandler.prototype.logEvent = function(event) {
     branch.logEvent(
-        event.eventName,
+        event.EventName,
         {...event.UserAttributes, ...event.EventAttributes},
-        callback (err)
+        function (err) { console.log(err); }
     );
 };
 
+EventHandler.prototype.logError = function(event) {};
 
-
-EventHandler.prototype.logError = function(event) {
-    // The schema for a logError event is the same, but noteworthy differences are as follows:
-    // {
-    //     EventAttributes: {m: 'name of error passed into MP', s: "Error", t: 'stack trace in string form if applicable'},
-    //     EventName: "Error"
-    // }
-};
-EventHandler.prototype.logPageView = function(event) {
-    /* The schema for a logPagView event is the same, but noteworthy differences are as follows:
-        {
-            EventAttributes: {hostname: "www.google.com", title: 'Test Page'},  // These are event attributes only if no additional event attributes are explicitly provided to mParticle.logPageView(...)
-        }
-        */
-};
+EventHandler.prototype.logPageView = function(event) {};
 
 module.exports = EventHandler;
 
 },{}],8:[function(require,module,exports){
-/*
-The 'mParticleUser' is an object with methods get user Identities and set/get user attributes
-Partners can determine what userIds are available to use in their SDK
-Call mParticleUser.getUserIdentities() to return an object of userIdentities --> { userIdentities: {customerid: '1234', email: 'email@gmail.com'} }
-For more identity types, see http://docs.mparticle.com/developers/sdk/javascript/identity#allowed-identity-types
-Call mParticleUser.getMPID() to get mParticle ID
-For any additional methods, see http://docs.mparticle.com/developers/sdk/javascript/apidocs/classes/mParticle.Identity.getCurrentUser().html
-*/
-
-/*
-identityApiRequest has the schema:
-{
-  userIdentities: {
-    customerid: '123',
-    email: 'abc'
-  }
-}
-For more userIdentity types, see http://docs.mparticle.com/developers/sdk/javascript/identity#allowed-identity-types
-*/
-
 function IdentityHandler(common) {
     this.common = common || {};
 }
@@ -645,13 +541,13 @@ function logout(mParticleUser, identityApiRequest) {
 }
 
 function setUserIdentity(forwarderSettings, id, type) {
-    branch.setIdentity(id);
+    if (type === 1) { branch.setIdentity(id); }
 }
 
-IdentityHandler.prototype.onUserIdentified = identified;
-IdentityHandler.prototype.onIdentifyComplete = identified;
-IdentityHandler.prototype.onLoginComplete = identified;
-IdentityHandler.prototype.onModifyComplete = identified;
+// IdentityHandler.prototype.onUserIdentified = identified;
+// IdentityHandler.prototype.onIdentifyComplete = identified;
+// IdentityHandler.prototype.onLoginComplete = identified;
+// IdentityHandler.prototype.onModifyComplete = identified;
 IdentityHandler.prototype.onLogoutComplete = logout;
 IdentityHandler.prototype.onSetUserIdentity =  setUserIdentity;
 
@@ -660,16 +556,7 @@ module.exports = IdentityHandler;
 },{}],9:[function(require,module,exports){
 var initialization = {
     name: 'Branch',
-/*  ****** Fill out initForwarder to load your SDK ******
-    Note that not all arguments may apply to your SDK initialization.
-    These are passed from mParticle, but leave them even if they are not being used.
-    forwarderSettings contain settings that your SDK requires in order to initialize
-    userAttributes example: {gender: 'male', age: 25}
-    userIdentities example: { 1: 'customerId', 2: 'facebookId', 7: 'emailid@email.com' }
-    additional identityTypes can be found at https://github.com/mParticle/mparticle-sdk-javascript/blob/master-v2/src/types.js#L88-L101
-*/
     initForwarder: function(settings, testMode, userAttributes, userIdentities, processEvent, eventQueue, isInitialized) {
-        /* `settings` contains your SDK specific settings such as apiKey that your customer needs in order to initialize your SDK properly */
         if (!!window.branch) {
             return;
         }
@@ -680,25 +567,12 @@ var initialization = {
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(branchScript);
         (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData".split(" "), 0);
         branchScript.onload = function(){
-            // use the test key if testMode ---- I am not sure if testMode is what is being referred to here, I think it is for running unit tests.
-            var key = testMode ? forwarderSettings.testKey : forwarderSettings.liveKey;
+            // use the test key if testMode
+            var key = testMode ? settings.testKey : settings.liveKey;
             branch.init(key, function(err, data) {
             // callback to handle err or data
                 isInitialized = true;
-            });
-        }
-        var branchScript = document.createElement('script');
-        branchScript.type = 'text/javascript';
-        branchScript.async = true;
-        branchScript.src = 'https://cdn.branch.io/branch-latest.min.js';
-        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(branchScript);
-        (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData".split(" "), 0);
-        branchScript.onload = function(){
-            // use the test key if testMode ---- I am not sure if testMode is what is being referred to here, I think it is for running unit tests.
-            var key = testMode ? forwarderSettings.testKey : forwarderSettings.liveKey;
-            branch.init(key, function(err, data) {
-            // callback to handle err or data
-                isInitialized = true;
+                console.log("isInitialized: " + isInitialized.toString());
             });
         }
     }
