@@ -36,7 +36,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         ...event.UserAttributes
     };
 
-    event.CurrencyCode ? (event_data_and_custom_data["currency"] = event.CurrencyCode) : console.log("");
+    !!event.CurrencyCode ? (event_data_and_custom_data["currency"] = event.CurrencyCode) : console.log("");
 
     // Turn ProductList into Branch content_items
     var content_items = event.ProductAction.ProductList.map(value => {
