@@ -15,9 +15,7 @@ var initialization = {
             // use the test key if testMode
             var key = testMode ? settings.testKey : settings.liveKey;
             branch.init(key, function(err, data) {
-            // callback to handle err or data
                 isInitialized = true;
-                branch.logEvent("Test");
             });
         }
     }
