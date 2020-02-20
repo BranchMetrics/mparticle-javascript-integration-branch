@@ -440,9 +440,20 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         shipping: event.ProductAction.ShippingAmount,
         tax: event.ProductAction.TaxAmount,
         revenue: event.ProductAction.TotalAmount,
-        ...event.EventAttributes,
-        ...event.UserAttributes
+        // currency: event.CurrencyCode ? event.CurrencyCode : null
     };
+
+    for (var eventAttr in event.EventAttributes) {
+        if (event.EventAttributes.hasOwnProperty(eventAttr)) {
+            event_data_and_custom_data[eventAttr] = event.EventAttributes[eventAttr]
+        }
+    }
+
+    for (var userAttr in event.UserAttributes) {
+        if (event.UserAttributes.hasOwnProperty(userAttr)) {
+            event_data_and_custom_data[userAttr] = event.UserAttributes[userAttr]
+        }
+    }
 
     !!event.CurrencyCode ? (event_data_and_custom_data["currency"] = event.CurrencyCode) : console.log("");
 
@@ -507,9 +518,23 @@ function EventHandler(common) {
 }
 
 EventHandler.prototype.logEvent = function(event) {
+    var attrs = {};
+
+    for (var eventAttr in event.EventAttributes) {
+        if (event.EventAttributes.hasOwnProperty(eventAttr)) {
+            attrs[eventAttr] = event.EventAttributes[eventAttr]
+        }
+    }
+
+    for (var userAttr in event.UserAttributes) {
+        if (event.UserAttributes.hasOwnProperty(userAttr)) {
+            attrs[userAttr] = event.UserAttributes[userAttr]
+        }
+    }
+
     branch.logEvent(
         event.EventName,
-        {...event.UserAttributes, ...event.EventAttributes},
+        attrs,
         function (err) { console.log(err); }
     );
 };
@@ -565,12 +590,9 @@ var initialization = {
         (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(branchScript);
         branchScript.onload = function(){
             (function(b,r,a,n,c,h,_,s,d,k){if(!b[n]||!b[n]._q){for(;s<_.length;)c(h,_[s++]);d=r.createElement(a);d.async=1;d.src="https://cdn.branch.io/branch-latest.min.js";k=r.getElementsByTagName(a)[0];k.parentNode.insertBefore(d,k);b[n]=h}})(window,document,"script","branch",function(b,r){b[r]=function(){b._q.push([r,arguments])}},{_q:[],_v:1},"addListener applyCode autoAppIndex banner closeBanner closeJourney creditHistory credits data deepview deepviewCta first getCode init link logout redeem referrals removeListener sendSMS setBranchViewData setIdentity track validateCode trackCommerceEvent logEvent disableTracking getBrowserFingerprintId crossPlatformIds lastAttributedTouchData".split(" "), 0);
-            // use the test key if testMode
-            var key = testMode ? settings.testKey : settings.liveKey;
+            var key = settings.branchKey;
             branch.init(key, function(err, data) {
-            // callback to handle err or data
                 isInitialized = true;
-                branch.logEvent("Test");
             });
         }
     }
@@ -622,12 +644,8 @@ module.exports = UserAttributeHandler;
 
 },{}],12:[function(require,module,exports){
 var SDKsettings = {
-    liveKey: 'key_live_phqFN7svok1v1Eo0X12gCcpbyBldcahC'
-    // testKey: 'key_test_koxAQ1CsknYC7vb6819wfphcCrpkiplL'
-    /* fill in SDKsettings with any particular settings or options your sdk requires in order to
-    initialize, this may be apiKey, projectId, primaryCustomerType, etc. These are passed
-    into the src/initialization.js file as the
-    */
+    /* These are keys for a Branch test app, feel free to use them as-is or substitute your own */
+    branchKey: 'key_live_phqFN7svok1v1Eo0X12gCcpbyBldcahC',
 };
 
 // Do not edit below:
