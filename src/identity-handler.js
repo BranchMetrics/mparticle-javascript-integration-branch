@@ -18,7 +18,7 @@ function setUserIdentity(forwarderSettings, id, type) {
     if (type === 1) { branch.setIdentity(id); }
 }
 
-// IdentityHandler.prototype.onUserIdentified = identified;
+IdentityHandler.prototype.onUserIdentified = identified;
 // IdentityHandler.prototype.onIdentifyComplete = identified;
 // IdentityHandler.prototype.onLoginComplete = identified;
 // IdentityHandler.prototype.onModifyComplete = identified;
