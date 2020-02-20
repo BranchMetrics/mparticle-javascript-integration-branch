@@ -51,6 +51,14 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
 
     // Turn ProductList into Branch content_items
     var content_items = event.ProductAction.ProductList.map(value => {
+        var attrs = {}
+
+        for (var attr in value.Attributes) {
+            if (value.Attributes.hasOwnProperty(attr)) {
+                attrs[attr] = value.Attributes[attr]
+            }
+        }
+
         return {
             $product_brand: value.Brand,
             $coupon_code: value.CouponCode,
@@ -60,7 +68,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             $sku: value.Sku,
             $total_amount: value.TotalAmount,
             $product_variant: value.Variant,
-            ...value.Attributes
+            attrs
         };
     })
 
