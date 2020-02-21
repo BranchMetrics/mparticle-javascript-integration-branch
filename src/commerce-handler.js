@@ -47,7 +47,9 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         }
     }
 
-    !!event.CurrencyCode ? (event_data_and_custom_data["currency"] = event.CurrencyCode) : console.log("");
+    if (event.CurrencyCode) {
+        event_data_and_custom_data["currency"] = event.CurrencyCode;
+    }
 
     // Turn ProductList into Branch content_items
     var content_items = event.ProductAction.ProductList.map(value => {
