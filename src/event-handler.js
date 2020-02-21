@@ -19,9 +19,23 @@ function EventHandler(common) {
 }
 
 EventHandler.prototype.logEvent = function(event) {
+    var attrs = {};
+
+    for (var eventAttr in event.EventAttributes) {
+        if (event.EventAttributes.hasOwnProperty(eventAttr)) {
+            attrs[eventAttr] = event.EventAttributes[eventAttr]
+        }
+    }
+
+    for (var userAttr in event.UserAttributes) {
+        if (event.UserAttributes.hasOwnProperty(userAttr)) {
+            attrs[userAttr] = event.UserAttributes[userAttr]
+        }
+    }
+
     branch.logEvent(
         event.EventName,
-        {...event.UserAttributes, ...event.EventAttributes},
+        attrs,
         function (err) { console.log(err); }
     );
 };

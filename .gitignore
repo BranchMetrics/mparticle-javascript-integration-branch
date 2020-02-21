@@ -1,3 +1,4 @@
 node_modules
 test/test-bundle.js
 test/end-to-end-testapp/compilation.js
+test/end-to-end-testapp/build/compilation.js

@@ -32,14 +32,35 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         shipping: event.ProductAction.ShippingAmount,
         tax: event.ProductAction.TaxAmount,
         revenue: event.ProductAction.TotalAmount,
-        ...event.EventAttributes,
-        ...event.UserAttributes
+        // currency: event.CurrencyCode ? event.CurrencyCode : null
     };
 
-    !!event.CurrencyCode ? (event_data_and_custom_data["currency"] = event.CurrencyCode) : console.log("");
+    for (var eventAttr in event.EventAttributes) {
+        if (event.EventAttributes.hasOwnProperty(eventAttr)) {
+            event_data_and_custom_data[eventAttr] = event.EventAttributes[eventAttr]
+        }
+    }
+
+    for (var userAttr in event.UserAttributes) {
+        if (event.UserAttributes.hasOwnProperty(userAttr)) {
+            event_data_and_custom_data[userAttr] = event.UserAttributes[userAttr]
+        }
+    }
+
+    if (event.CurrencyCode) {
+        event_data_and_custom_data["currency"] = event.CurrencyCode;
+    }
 
     // Turn ProductList into Branch content_items
     var content_items = event.ProductAction.ProductList.map(value => {
+        var attrs = {}
+
+        for (var attr in value.Attributes) {
+            if (value.Attributes.hasOwnProperty(attr)) {
+                attrs[attr] = value.Attributes[attr]
+            }
+        }
+
         return {
             $product_brand: value.Brand,
             $coupon_code: value.CouponCode,
@@ -49,7 +70,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             $sku: value.Sku,
             $total_amount: value.TotalAmount,
             $product_variant: value.Variant,
-            ...value.Attributes
+            attrs
         };
     })
 
