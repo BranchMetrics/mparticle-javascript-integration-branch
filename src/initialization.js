@@ -1,5 +1,5 @@
 var initialization = {
-    name: 'Branch',
+    name: 'BranchMetrics',
     initForwarder: function(settings, testMode, userAttributes, userIdentities, processEvent, eventQueue, isInitialized) {
         if (!testMode) {
             if (!!window.branch) {
