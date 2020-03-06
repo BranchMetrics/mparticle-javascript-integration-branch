@@ -6,34 +6,36 @@ function IdentityHandler(common) {
 "", "MPID", "Email", "Other", "Other2", "Other3", "Other4"
 function identified(mParticleUser, identityApiRequest) {
     var mPUser = mParticleUser.getUserIdentities().userIdentities;
+    var userId = '';
+
     switch (this.common.settings.userIdentificationType) {
       case ('CustomerId'):
-        var userId = mPUser.customerid;
+        userId = mPUser.customerid;
         break;
       case ('MPID'):
-        var userId = mParticleUser.getMPID();
+        userId = mParticleUser.getMPID();
         break;
       case ('Email'):
-        var userId = mPUser.email;
+        userId = mPUser.email;
         break;
       case ('Other'):
-        var userId = mPUser.other;
+        userId = mPUser.other;
         break;
       case ('Other2'):
-        var userId = mPUser.other2;
+        userId = mPUser.other2;
         break;
       case ('Other3'):
-        var userId = mPUser.other3;
+        userId = mPUser.other3;
         break;
       case ('Other4'):
-        var userId = mPUser.other4;
+        userId = mPUser.other4;
         break;
       default:
-        var userId = mPUser.customerid;
+        userId = mPUser.customerid;
         break;
     }
 
-    if (typeof userId !== 'undefined') {
+    if (userId !== '' && typeof userId !== undefined) {
         branch.setIdentity(userId);
     }
 }
