@@ -3,7 +3,6 @@ function IdentityHandler(common) {
 }
 
 
-"", "MPID", "Email", "Other", "Other2", "Other3", "Other4"
 function identified(mParticleUser, identityApiRequest) {
     var mPUser = mParticleUser.getUserIdentities().userIdentities;
     var userId = '';
