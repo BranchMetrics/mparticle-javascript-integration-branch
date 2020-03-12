@@ -1,6 +1,7 @@
 var initialization = {
     name: 'BranchMetrics',
-    initForwarder: function(settings, testMode, userAttributes, userIdentities, processEvent, eventQueue, isInitialized) {
+    initForwarder: function(settings, testMode, userAttributes, userIdentities, processEvent, eventQueue, isInitialized, common) {
+        common.settings = settings
         if (!testMode) {
             if (!!window.branch) {
                 return;
