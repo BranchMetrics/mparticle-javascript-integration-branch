@@ -2,10 +2,39 @@ function IdentityHandler(common) {
     this.common = common || {};
 }
 
+
 function identified(mParticleUser, identityApiRequest) {
-    var mPUser = mParticleUser.getUserIdentities();
-    var userId = mPUser.customerid || mPUser.other || mPUser.other2 || mPUser.other3 || mPUser.other4;
-    if (typeof userId !== 'undefined') {
+    var mPUser = mParticleUser.getUserIdentities().userIdentities;
+    var userId = '';
+
+    switch (this.common.settings.userIdentificationType) {
+      case ('CustomerId'):
+        userId = mPUser.customerid;
+        break;
+      case ('MPID'):
+        userId = mParticleUser.getMPID();
+        break;
+      case ('Email'):
+        userId = mPUser.email;
+        break;
+      case ('Other'):
+        userId = mPUser.other;
+        break;
+      case ('Other2'):
+        userId = mPUser.other2;
+        break;
+      case ('Other3'):
+        userId = mPUser.other3;
+        break;
+      case ('Other4'):
+        userId = mPUser.other4;
+        break;
+      default:
+        userId = mPUser.customerid;
+        break;
+    }
+
+    if (userId !== '' && typeof userId !== undefined) {
         branch.setIdentity(userId);
     }
 }
