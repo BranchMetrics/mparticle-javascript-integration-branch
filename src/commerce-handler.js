@@ -65,7 +65,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             $product_brand: value.Brand,
             $coupon_code: value.CouponCode,
             $product_name: value.Name,
-            $price: value.Price,
+            $price: parseFloat(value.Price),
             $quantity: value.Quantity,
             $sku: value.Sku,
             $total_amount: value.TotalAmount,
