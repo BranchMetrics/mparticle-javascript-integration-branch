@@ -38,14 +38,29 @@ function CommerceHandler(common) {
 CommerceHandler.prototype.logCommerceEvent = function(event) {
     var event_data_and_custom_data = {
         mpid: event.MPID,
-        affiliation: event.ProductAction.Affiliation,
-        coupon: event.ProductAction.CouponCode,
-        transaction_id: event.ProductAction.TransactionId,
-        shipping: event.ProductAction.ShippingAmount,
-        tax: event.ProductAction.TaxAmount,
-        revenue: event.ProductAction.TotalAmount,
-        // currency: event.CurrencyCode ? event.CurrencyCode : null
     };
+
+    if (event.ProductAction.Affiliation) {
+        event_data_and_custom_data["affiliation"] = event.ProductAction.Affiliation;
+    }
+    if (event.ProductAction.CouponCode) {
+        event_data_and_custom_data["coupon"] = event.ProductAction.CouponCode;
+    }
+    if (event.ProductAction.TransactionId) {
+        event_data_and_custom_data["transaction_id"] = event.ProductAction.TransactionId;
+    }
+    if (event.ProductAction.ShippingAmount) {
+        event_data_and_custom_data["shipping"] = event.ProductAction.ShippingAmount;
+    }
+    if (event.ProductAction.TaxAmount) {
+        event_data_and_custom_data["tax"] = event.ProductAction.TaxAmount;
+    }
+    if (event.ProductAction.TotalAmount) {
+        event_data_and_custom_data["revenue"] = event.ProductAction.TotalAmount;
+    }
+    if (event.CurrencyCode) {
+        event_data_and_custom_data["currency"] = event.CurrencyCode;
+    }
 
     for (var eventAttr in event.EventAttributes) {
         if (event.EventAttributes.hasOwnProperty(eventAttr)) {
@@ -57,10 +72,6 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         if (event.UserAttributes.hasOwnProperty(userAttr)) {
             event_data_and_custom_data[userAttr] = event.UserAttributes[userAttr];
         }
-    }
-
-    if (event.CurrencyCode) {
-        event_data_and_custom_data["currency"] = event.CurrencyCode;
     }
 
     // Turn ProductList into Branch content_items
@@ -77,10 +88,10 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
             $product_brand: value.Brand,
             $coupon_code: value.CouponCode,
             $product_name: value.Name,
-            $price: value.Price,
+            $price: parseFloat(value.Price),
             $quantity: value.Quantity,
             $sku: value.Sku,
-            $total_amount: value.TotalAmount,
+            $total_amount: parseFloat(value.TotalAmount),
             $product_variant: value.Variant,
             attrs
         };
