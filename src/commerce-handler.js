@@ -95,7 +95,7 @@ CommerceHandler.prototype.logCommerceEvent = function(event) {
         event_data_and_custom_data,
         content_items,
         customer_event_alias,
-        function (err) { console.log(err); }
+        function (err) { }
     );
 };
 
