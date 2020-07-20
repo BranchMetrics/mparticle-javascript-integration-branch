@@ -135,7 +135,7 @@ EventHandler.prototype.logEvent = function(event) {
     branch.logEvent(
         event.EventName,
         attrs,
-        function (err) { console.log(err); }
+        function (err) { }
     );
 };
 

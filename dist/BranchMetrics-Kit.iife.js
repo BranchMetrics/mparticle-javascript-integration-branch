@@ -134,7 +134,7 @@ var BranchMetricsKit = (function (exports) {
         branch.logEvent(
             event.EventName,
             attrs,
-            function (err) { console.log(err); }
+            function (err) { }
         );
     };
 
