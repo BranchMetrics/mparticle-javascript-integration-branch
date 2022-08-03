@@ -4,6 +4,8 @@ A web integration (or a kit) is an extension to the core [mParticle Web SDK](htt
 
 The kit takes care of initializing, forwarding events, and tracking identities for you.
 
+Note : You don’t need to integrate branch-sdk.This kit will take care of including & initializing the branch-sdk internally.
+
 ## Support
 
 Questions or concerns? Reach out to your Branch account manager or <support@branch.io>.
