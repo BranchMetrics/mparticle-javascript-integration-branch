@@ -29,6 +29,24 @@ function identified(mParticleUser, identityApiRequest) {
       case ('Other4'):
         userId = mPUser.other4;
         break;
+      case ('Other5'):
+        userId = mPUser.other5;
+        break;
+      case ('Other6'):
+        userId = mPUser.other6;
+        break;
+      case ('Other7'):
+        userId = mPUser.other7;
+        break;
+      case ('Other8'):
+        userId = mPUser.other8;
+        break;
+      case ('Other9'):
+        userId = mPUser.other9;
+        break;
+      case ('Other10'):
+        userId = mPUser.other10;
+        break;
       default:
         userId = mPUser.customerid;
         break;
