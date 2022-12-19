@@ -12,6 +12,7 @@
     "dist/BranchMetrics-Kit.common.js"
   ],
   "devDependencies": {
+    "@mparticle/web-kit-wrapper": "^1.0.5",
     "mocha": "^5.2.0",
     "chai": "^4.2.0",
     "karma": "^3.1.4",
@@ -31,7 +32,6 @@
     "watchify": "^3.11.0"
   },
   "dependencies": {
-    "@mparticle/web-kit-wrapper": "^1.0.5",
-    "@mparticle/web-sdk": "^2.11.3"
+    "@mparticle/web-sdk": "^2.18.0"
   }
 }
