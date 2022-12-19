@@ -1,6 +1,6 @@
 {
   "name": "@mparticle/branch-web-kit",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "scripts": {
     "testKarma": "node test/boilerplate/test-karma.js",
     "build": "ENVIRONMENT=production rollup --config rollup.config.js",
