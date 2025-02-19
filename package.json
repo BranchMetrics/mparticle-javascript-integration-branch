@@ -1,6 +1,6 @@
 {
   "name": "@mparticle/branch-web-kit",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "scripts": {
     "testKarma": "node test/boilerplate/test-karma.js",
     "build": "ENVIRONMENT=production rollup --config rollup.config.js",
@@ -12,7 +12,7 @@
     "dist/BranchMetrics-Kit.common.js"
   ],
   "devDependencies": {
-    "@mparticle/web-kit-wrapper": "^1.0.5",
+    "@mparticle/web-kit-wrapper": "^1.0.6",
     "mocha": "^5.2.0",
     "chai": "^4.2.0",
     "karma": "^3.1.4",
@@ -32,6 +32,6 @@
     "watchify": "^3.11.0"
   },
   "dependencies": {
-    "@mparticle/web-sdk": "^2.18.0"
+    "@mparticle/web-sdk": "^2.33.0"
   }
 }
