@@ -12,7 +12,7 @@
     "dist/BranchMetrics-Kit.common.js"
   ],
   "devDependencies": {
-    "@mparticle/web-kit-wrapper": "^1.0.5",
+    "@mparticle/web-kit-wrapper": "^1.0.6",
     "mocha": "^5.2.0",
     "chai": "^4.2.0",
     "karma": "^3.1.4",
