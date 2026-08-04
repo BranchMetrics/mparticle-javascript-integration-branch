@@ -32,6 +32,6 @@
     "watchify": "^3.11.0"
   },
   "dependencies": {
-    "@mparticle/web-sdk": "^2.18.0"
+    "@mparticle/web-sdk": "^2.45.0"
   }
 }
